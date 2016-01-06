@@ -32,14 +32,13 @@ To create a new Type, put the code below on terminal:
 ::
 
 Response:
-
-{
-	"date_added": "2015-10-04 00:00:00",
-	"is_active": true,
-	"name": "Caminhão",
-	"slug": "caminhao",
-}
 ::
+	{
+		"date_added": "2015-10-04 00:00:00",
+		"is_active": true,
+		"name": "Caminhão",
+		"slug": "caminhao",
+	}
 
 Brand
 ----------------
@@ -49,14 +48,13 @@ To create a new Brand, put the code below on terminal:
 ::
 
 Response:
-
-{
-	"is_active": true,
-	"date_added": "2015-10-04 00:00:00",
-	"name": "Scania",
-	"slug": "scania",
-}
 ::
+	{
+		"is_active": true,
+		"date_added": "2015-10-04 00:00:00",
+		"name": "Scania",
+		"slug": "scania",
+	}
 
 Transport
 ----------------
@@ -66,12 +64,12 @@ To create a new Transport, put the code below on terminal:
 ::
 
 Response:
-
-{
-	"name": "Caminhão",
-	"slug": "caminhao",
-}
 ::
+
+	{
+		"name": "Caminhão",
+		"slug": "caminhao",
+	}
 
 Maps
 ----------------
@@ -81,12 +79,11 @@ To create a new Type, put the code below on terminal:
 ::
 
 Response:
-
-{
-	"name": "Caminhão",
-	"slug": "caminhao",
-}
 ::
+	{
+		"name": "Caminhão",
+		"slug": "caminhao",
+	}
 
 This is a demo project.
 
