@@ -111,7 +111,7 @@ LOGGING = {
         'log_file': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(BASE_DIR, '../nomadapp.log'),
+            'filename': os.path.join(BASE_DIR, '../walmart_log.log'),
             'maxBytes': 1024 * 1024 * 5,
             'formatter': 'verbose',
         },
