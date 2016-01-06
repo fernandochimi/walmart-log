@@ -19,17 +19,20 @@ To use Walmart Log, you need to install some libraries and modules:
 	* Python 2.7
 ::
 
-After you complete the instalation of libraries, you can install this: ::
+After you complete the instalation of libraries, you can install this:
+
 	pip install wal-log
 ::
 
 Types
 ----------------
-To create a new Type, put the code below on terminal: ::
+To create a new Type, put the code below on terminal:
+
 	curl -X POST -H "Content-Type: application/json" -d '{"name": "Caminhão", "slug": "caminhao"}' http://localhost:8000/api/v1/type/?token={valid-token}
 ::
 
-Response: ::
+Response:
+
 {
 	"date_added": "2015-10-04 00:00:00",
 	"is_active": true,
@@ -40,11 +43,13 @@ Response: ::
 
 Brand
 ----------------
-To create a new Brand, put the code below on terminal: ::
+To create a new Brand, put the code below on terminal:
+
 	curl -X POST -H "Content-Type: application/json" -d '{"name": "Scania", "slug": "scania"}' http://localhost:8000/api/v1/brand/?token={valid-token}
 ::
 
-Response: ::
+Response:
+
 {
 	"is_active": true,
 	"date_added": "2015-10-04 00:00:00",
@@ -55,11 +60,13 @@ Response: ::
 
 Transport
 ----------------
-To create a new Transport, put the code below on terminal: ::
+To create a new Transport, put the code below on terminal:
+
 	curl -X POST -H "Content-Type: application/json" -d '{"transport_way": 1, "transport_type": "caminhao", "brand": "scania", "name": "Scania L10", "slug": "scania-l10", "sign": "XXX-9999", "autonomy": "14.2"}' http://localhost:8000/api/v1/transport/?token={valid-token}
 ::
 
-Response: ::
+Response:
+
 {
 	"name": "Caminhão",
 	"slug": "caminhao",
@@ -68,11 +75,13 @@ Response: ::
 
 Maps
 ----------------
-To create a new Type, put the code below on terminal: ::
+To create a new Type, put the code below on terminal:
+
 	curl -X POST -H "Content-Type: application/json" -d '{"name": "Caminhão", "slug": "caminhao"}' http://localhost:8000/api/v1/type/?token={valid-token}
 ::
 
-Response: ::
+Response:
+
 {
 	"name": "Caminhão",
 	"slug": "caminhao",
