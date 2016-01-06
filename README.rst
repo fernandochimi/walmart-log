@@ -22,15 +22,14 @@ To use Walmart Log, you need to install some libraries and modules:
 
 After you complete the instalation of libraries, you can install this:
 ::
-	pip install wal-log
+	$ pip install wal-log
 
 
 Types
 ----------------
 To create a new Type, put the code below on terminal:
-
-	curl -X POST -H "Content-Type: application/json" -d '{"name": "Caminhão", "slug": "caminhao"}' http://localhost:8000/api/v1/type/?token={valid-token}
 ::
+	$ curl -X POST -H "Content-Type: application/json" -d '{"name": "Caminhão", "slug": "caminhao"}' http://localhost:8000/api/v1/type/?token={valid-token}
 
 Response:
 ::
@@ -44,9 +43,8 @@ Response:
 Brand
 ----------------
 To create a new Brand, put the code below on terminal:
-
-	curl -X POST -H "Content-Type: application/json" -d '{"name": "Scania", "slug": "scania"}' http://localhost:8000/api/v1/brand/?token={valid-token}
 ::
+	$ curl -X POST -H "Content-Type: application/json" -d '{"name": "Scania", "slug": "scania"}' http://localhost:8000/api/v1/brand/?token={valid-token}
 
 Response:
 ::
@@ -60,9 +58,8 @@ Response:
 Transport
 ----------------
 To create a new Transport, put the code below on terminal:
-
-	curl -X POST -H "Content-Type: application/json" -d '{"transport_way": 1, "transport_type": "caminhao", "brand": "scania", "name": "Scania L10", "slug": "scania-l10", "sign": "XXX-9999", "autonomy": "14.2"}' http://localhost:8000/api/v1/transport/?token={valid-token}
 ::
+	$ curl -X POST -H "Content-Type: application/json" -d '{"transport_way": 1, "transport_type": "caminhao", "brand": "scania", "name": "Scania L10", "slug": "scania-l10", "sign": "XXX-9999", "autonomy": "14.2"}' http://localhost:8000/api/v1/transport/?token={valid-token}
 
 Response:
 ::
@@ -75,9 +72,8 @@ Response:
 Maps
 ----------------
 To create a new Type, put the code below on terminal:
-
-	curl -X POST -H "Content-Type: application/json" -d '{"name": "Caminhão", "slug": "caminhao"}' http://localhost:8000/api/v1/type/?token={valid-token}
 ::
+	$curl -X POST -H "Content-Type: application/json" -d '{"name": "Caminhão", "slug": "caminhao"}' http://localhost:8000/api/v1/type/?token={valid-token}
 
 Response:
 ::
