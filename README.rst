@@ -19,8 +19,11 @@ To use Walmart Log, you need to install some libraries and modules:
 	* Python 2.7
 ::
 
+
 After you complete the instalation of libraries, you can install this:
+
 	``pip install wal-log``
+
 
 Types
 ----------------
