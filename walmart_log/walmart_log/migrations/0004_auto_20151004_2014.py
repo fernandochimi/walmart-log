@@ -8,7 +8,7 @@ import datetime
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wal_log', '0003_transport_slug'),
+        ('walmart_log', '0003_transport_slug'),
     ]
 
     operations = [

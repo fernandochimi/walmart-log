@@ -8,7 +8,7 @@ import uuid
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wal_log', '0001_initial'),
+        ('walmart_log', '0001_initial'),
     ]
 
     operations = [

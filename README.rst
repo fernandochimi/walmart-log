@@ -1,22 +1,17 @@
-Crews Log
+Walmart Log
 ================
 
 Intro
 ----------------
-The Crews Log Project was developed to manage and help the logistic team of the Company.
+The Walmart Log Project was developed to manage and help the logistic team of the Company.
 This is a solution that envolved a better cost benefit to delivery products from city to another city with every transport.
 
 The project was developed in Python 2.7, with Django Framework 1.8, combined with Redis server 3. It is work to give a best performance to the system.
 
-Crews Log? WTF?
-----------------
-The name comes from the movie Black Dog (1998), with Patrick Swayze (R.I.P.). He made a character called Jack Crews, a truck driver who has just been released from jail for vehicular manslaughter.
-So, Crews from character and Log from Logistic ways to make a better shipping coast.
-
 
 Requirements
 ----------------
-To use Crews Log, you need to install some libraries and modules: ::
+To use Walmart Log, you need to install some libraries and modules: ::
 	* sudo apt-get install libffi-dev libssl-dev
 	* redis
 	* virtualenvwrapper

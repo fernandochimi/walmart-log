@@ -59,8 +59,8 @@ class Migration(migrations.Migration):
                 ('gas_value', models.DecimalField(decimal_places=2, default=0, max_digits=5, blank=True, null=True, verbose_name='gas value')),
                 ('other_coasts', models.DecimalField(decimal_places=2, default=0, max_digits=5, blank=True, null=True, verbose_name='other coasts')),
                 ('coast_percent', models.DecimalField(decimal_places=2, default=0, max_digits=5, blank=True, null=True, verbose_name='coast percent')),
-                ('city_destiny', models.ForeignKey(related_name='citydestiny_set', to='wal_log.City')),
-                ('city_origin', models.ForeignKey(related_name='cityorigin_set', to='wal_log.City')),
+                ('city_destiny', models.ForeignKey(related_name='citydestiny_set', to='walmart_log.City')),
+                ('city_origin', models.ForeignKey(related_name='cityorigin_set', to='walmart_log.City')),
             ],
             options={
                 'verbose_name': 'Map',
@@ -73,7 +73,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(unique=True, max_length=255, verbose_name='name')),
                 ('uf', models.CharField(max_length=2, verbose_name='uf')),
-                ('country', models.ForeignKey(related_name='state_set', to='wal_log.Country')),
+                ('country', models.ForeignKey(related_name='state_set', to='walmart_log.Country')),
             ],
             options={
                 'verbose_name': 'State',
@@ -103,7 +103,7 @@ class Migration(migrations.Migration):
                 ('autonomy', models.DecimalField(default=0, help_text=b'On kilometers. Ex: 12.2', verbose_name='autonomy', max_digits=8, decimal_places=2)),
                 ('date_added', models.DateTimeField(default=datetime.datetime.now)),
                 ('is_active', models.BooleanField(default=True)),
-                ('brand', models.ForeignKey(to='wal_log.Brand')),
+                ('brand', models.ForeignKey(to='walmart_log.Brand')),
             ],
             options={
                 'verbose_name': 'Transport',
@@ -132,7 +132,7 @@ class Migration(migrations.Migration):
                 ('address', models.CharField(max_length=255, null=True, verbose_name='address', blank=True)),
                 ('complement', models.CharField(max_length=255, null=True, verbose_name='complement', blank=True)),
                 ('area', models.CharField(max_length=255, null=True, verbose_name='area', blank=True)),
-                ('city', models.ForeignKey(related_name='zipcode_set', to='wal_log.City')),
+                ('city', models.ForeignKey(related_name='zipcode_set', to='walmart_log.City')),
             ],
             options={
                 'verbose_name': 'ZipCode',
@@ -142,16 +142,16 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='transport',
             name='transport_type',
-            field=models.ForeignKey(to='wal_log.Type'),
+            field=models.ForeignKey(to='walmart_log.Type'),
         ),
         migrations.AddField(
             model_name='map',
             name='transport',
-            field=models.ForeignKey(related_name='transport_set', to='wal_log.Transport'),
+            field=models.ForeignKey(related_name='transport_set', to='walmart_log.Transport'),
         ),
         migrations.AddField(
             model_name='city',
             name='state',
-            field=models.ForeignKey(related_name='city_set', to='wal_log.State'),
+            field=models.ForeignKey(related_name='city_set', to='walmart_log.State'),
         ),
     ]

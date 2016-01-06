@@ -27,7 +27,7 @@ INSTALLED_APPS = (
     'restless',
 
     # main app
-    'crews_log',
+    'walmart_log',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -68,7 +68,7 @@ WSGI_APPLICATION = 'wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'walmart_log.sqlite3'),
     }
 }
 
@@ -106,21 +106,34 @@ LOGGING = {
             'format': '%(levelname)s %(message)s',
         },
     },
+
     'handlers': {
-        'file': {
+        'log_file': {
             'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'wal_log.log',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, '../nomadapp.log'),
+            'maxBytes': 1024 * 1024 * 5,
             'formatter': 'verbose',
         },
+        'null': {
+            'class': 'django.utils.log.NullHandler',
+        },
     },
+
     'loggers': {
-        'django': {
-            'handlers': ['file'],
+        'django.request': {
+            'handlers': ['log_file'],
             'propagate': True,
             'level': 'DEBUG',
         },
-    },
+        'django': {
+            'handlers': ['null', ],
+        },
+        'walmart_log': {
+            'handlers': ['log_file'],
+            'level': 'DEBUG',
+        },
+    }
 }
 
 CELERY_RESULT_BACKEND = "redis"

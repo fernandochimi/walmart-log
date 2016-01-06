@@ -14,13 +14,15 @@ from models import Token, Type, Brand, Transport, Map
 from utils import GOOGLE_MAPS_API_KEY,\
     GOOGLE_MAPS_URL, DISTANCE_MATRIX_API, OUTPUT_JSON
 
-logger = logging.getLogger('wal_log.wal_log.resources')
+logger = logging.getLogger('walmart_log.walmart_log.resources')
 
 
 class BaseResource(DjangoResource):
     DEFAULT_PAGINATOR = 10
 
     dict_filters = {}
+
+    preparer = FieldsPreparer(fields={})
 
     def filters(self, request):
         items = {}
@@ -93,12 +95,12 @@ class BaseResource(DjangoResource):
 
 
 class TypeResource(BaseResource):
-    preparer = FieldsPreparer(fields={
+    fields = {
         'name': 'name',
         'slug': 'slug',
         'date_added': 'date_added',
         'is_active': 'is_active',
-    })
+    }
 
     def queryset(self, request):
         filters = self.filters(request=self.request)
@@ -134,12 +136,12 @@ class TypeResource(BaseResource):
 
 
 class BrandResource(BaseResource):
-    preparer = FieldsPreparer(fields={
+    fields = {
         'name': 'name',
         'slug': 'slug',
         'date_added': 'date_added',
         'is_active': 'is_active',
-    })
+    }
 
     def queryset(self, request):
         filters = self.filters(request=self.request)
@@ -175,14 +177,14 @@ class BrandResource(BaseResource):
 
 
 class TransportResource(BaseResource):
-    preparer_list = FieldsPreparer(fields={
+    preparer_list = fields = {
         'name': 'name',
         'slug': 'slug',
         'date_added': 'date_added',
         'is_active': 'is_active',
-    })
+    }
 
-    preparer_detail = FieldsPreparer(fields={
+    preparer_detail = fields = {
         'transport_way': 'transport_way',
         'transport_type': 'type.slug',
         'brand': 'brand.slug',
@@ -192,7 +194,7 @@ class TransportResource(BaseResource):
         'autonomy': 'autonomy',
         'date_added': 'date_added',
         'is_active': 'is_active',
-    })
+    }
 
     def queryset(self, request):
         filters = self.filters(request=self.request)
@@ -224,7 +226,8 @@ class TransportResource(BaseResource):
         except Transport.DoesNotExist:
             return False
         transport.transport_way = self.data['transport_way'],
-        transport.transport_type = Type.objects.get(name=self.data['transport_type']),
+        transport.transport_type = Type.objects.get(
+            name=self.data['transport_type']),
         transport.brand = Brand.objects.get(name=self.data['brand']),
         transport.name = self.data['name'],
         transport.slug = self.data['slug'],
@@ -238,12 +241,12 @@ class TransportResource(BaseResource):
 
 
 class MapResource(BaseResource):
-    preparer_list = FieldsPreparer(fields={
+    preparer_list = fields = {
         'id': 'id',
         'name': 'name',
-    })
+    }
 
-    preparer_detail = FieldsPreparer(fields={
+    preparer_detail = fields = {
         'id': 'id',
         'name': 'name',
         'city_origin': 'city_origin',
@@ -252,7 +255,7 @@ class MapResource(BaseResource):
         'gas_value': 'gas_value',
         'other_coasts': 'other_coasts',
         'coast_percent': 'coast_percent',
-    })
+    }
 
     def __init__(self, *args, **kwargs):
         super(MapResource, self).__init__(*args, **kwargs)
@@ -284,5 +287,7 @@ class MapResource(BaseResource):
         urlpatterns = super(MapResource, cls).urls(name_prefix=name_prefix)
         return urlpatterns + patterns(
             '',
-            url(r'^get_map/$', cls.as_view('get_map'), name=cls.build_url_name('get_map', name_prefix)),
+            url(
+                r'^get_map/$', cls.as_view('get_map'),
+                name=cls.build_url_name('get_map', name_prefix)),
         )

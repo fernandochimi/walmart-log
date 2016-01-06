@@ -72,3 +72,6 @@ staticfiles/
 **/filer_public_thumbnails
 **/uploads
 **/upload
+
+# Log Files
+*.log
