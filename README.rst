@@ -11,7 +11,7 @@ The project was developed in Python 2.7, with Django Framework 1.8, combined wit
 
 Requirements
 ----------------
-To use Walmart Log, you need to install some libraries and modules: ::
+To use Walmart Log, you need to install some libraries and modules:::
 	* sudo apt-get install libffi-dev libssl-dev
 	* redis
 	* virtualenvwrapper
