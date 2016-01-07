@@ -179,16 +179,16 @@ class BrandResource(BaseResource):
 
 
 class TransportResource(BaseResource):
-    preparer_list = fields = {
+    preparer_list = {
         'name': 'name',
         'slug': 'slug',
         'date_added': 'date_added',
         'is_active': 'is_active',
     }
 
-    preparer_detail = fields = {
+    preparer_detail = {
         'transport_way': 'transport_way',
-        'transport_type': 'type.slug',
+        'transport_type': 'transport_type.slug',
         'brand': 'brand.slug',
         'name': 'name',
         'slug': 'slug',
@@ -226,11 +226,11 @@ class TransportResource(BaseResource):
         try:
             transport = Transport.objects.get(id=pk)
         except Transport.DoesNotExist:
-            return False
+            return Transport()
         transport.transport_way = self.data['transport_way']
         transport.transport_type = Type.objects.get(
-            name=self.data['transport_type'])
-        transport.brand = Brand.objects.get(name=self.data['brand'])
+            slug=self.data['transport_type'])
+        transport.brand = Brand.objects.get(slug=self.data['brand'])
         transport.name = self.data['name']
         transport.slug = self.data['slug']
         transport.sign = self.data['sign']
@@ -243,12 +243,12 @@ class TransportResource(BaseResource):
 
 
 class MapResource(BaseResource):
-    preparer_list = fields = {
+    preparer_list = {
         'id': 'id',
         'name': 'name',
     }
 
-    preparer_detail = fields = {
+    preparer_detail = {
         'id': 'id',
         'name': 'name',
         'city_origin': 'city_origin',
@@ -273,11 +273,11 @@ class MapResource(BaseResource):
         return qs.filter(**filters)
 
     def list(self):
-        self.fields = self.preparer_list
+        self.preparer.fields = self.preparer_list
         return self.queryset(request=self.request)
 
     def detail(self, pk):
-        self.fields = self.preparer_detail
+        self.preparer.fields = self.preparer_detail
         return self.queryset(request=self.request).get(id=pk)
 
     def get_map(self, origins, destinations):
