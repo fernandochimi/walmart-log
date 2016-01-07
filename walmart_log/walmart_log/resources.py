@@ -3,6 +3,8 @@ import logging
 import json
 import requests
 
+from datetime import datetime
+
 from django.core.paginator import Paginator
 from django.conf.urls import patterns, url
 
@@ -89,7 +91,7 @@ class BaseResource(DjangoResource):
     def prepare(self, data):
         prepped = super(BaseResource, self).prepare(data)
         date_added = prepped['date_added']
-        format_date = '%Y-%m-%d 00:00:00'
+        format_date = '%Y-%m-%d %H:%M:%S'
         prepped['date_added'] = date_added.strftime(format_date)
         return prepped
 
@@ -108,11 +110,11 @@ class TypeResource(BaseResource):
         return qs.filter(**filters)
 
     def list(self):
-        self.fields = self.preparer
+        self.preparer.fields = self.fields
         return self.queryset(request=self.request)
 
     def detail(self, pk):
-        self.fields = self.preparer
+        self.preparer.fields = self.fields
         return self.queryset(request=self.request).get(id=pk)
 
     def create(self):
@@ -123,11 +125,11 @@ class TypeResource(BaseResource):
 
     def update(self, pk):
         try:
-            up_type = Type.objects.get(id=pk)
+            up_type = self.queryset(request=self.request).get(id=pk)
         except Type.DoesNotExist:
-            return False
-        up_type.name = self.data['name'],
-        up_type.slug = self.data['slug'],
+            return Type()
+        up_type.name = self.data['name']
+        up_type.slug = self.data['slug']
         up_type.save()
         return up_type
 
@@ -149,11 +151,11 @@ class BrandResource(BaseResource):
         return qs.filter(**filters)
 
     def list(self):
-        self.fields = self.preparer
+        self.preparer.fields = self.fields
         return self.queryset(request=self.request)
 
     def detail(self, pk):
-        self.fields = self.preparer
+        self.preparer.fields = self.fields
         return self.queryset(request=self.request).get(id=pk)
 
     def create(self):
@@ -164,11 +166,11 @@ class BrandResource(BaseResource):
 
     def update(self, pk):
         try:
-            brand = Brand.objects.get(id=pk)
+            brand = self.queryset(request=self.request).get(id=pk)
         except Brand.DoesNotExist:
-            return False
-        brand.name = self.data['name'],
-        brand.slug = self.data['slug'],
+            return Brand()
+        brand.name = self.data['name']
+        brand.slug = self.data['slug']
         brand.save()
         return brand
 
@@ -202,11 +204,11 @@ class TransportResource(BaseResource):
         return qs.filter(**filters)
 
     def list(self):
-        self.fields = self.preparer_list
+        self.preparer.fields = self.preparer_list
         return self.queryset(request=self.request)
 
     def detail(self, pk):
-        self.fields = self.preparer_detail
+        self.preparer.fields = self.preparer_detail
         return self.queryset(request=self.request).get(id=pk)
 
     def create(self):
@@ -225,14 +227,14 @@ class TransportResource(BaseResource):
             transport = Transport.objects.get(id=pk)
         except Transport.DoesNotExist:
             return False
-        transport.transport_way = self.data['transport_way'],
+        transport.transport_way = self.data['transport_way']
         transport.transport_type = Type.objects.get(
-            name=self.data['transport_type']),
-        transport.brand = Brand.objects.get(name=self.data['brand']),
-        transport.name = self.data['name'],
-        transport.slug = self.data['slug'],
-        transport.sign = self.data['sign'],
-        transport.autonomy = self.data['autonomy'],
+            name=self.data['transport_type'])
+        transport.brand = Brand.objects.get(name=self.data['brand'])
+        transport.name = self.data['name']
+        transport.slug = self.data['slug']
+        transport.sign = self.data['sign']
+        transport.autonomy = self.data['autonomy']
         transport.save()
         return transport
 

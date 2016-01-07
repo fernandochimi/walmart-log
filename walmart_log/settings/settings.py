@@ -62,23 +62,12 @@ TEMPLATES = [
 WSGI_APPLICATION = 'wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/1.8/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'walmart_log.sqlite3'),
-    }
-}
-
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Sao_Paulo'
 
 USE_I18N = True
 
@@ -93,53 +82,3 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 GOOGLE_MAPS_API_KEY = 'AIzaSyB_mUhJFOI8VjHUv5auVlmE0OPPtF9Gbqw'
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': "[%(asctime)s] %(levelname)s [%(name)s: %(lineno)s %(message)s]",
-            'datefmt': "%d/%b/%Y %H:%M:%S",
-        },
-        'simple': {
-            'format': '%(levelname)s %(message)s',
-        },
-    },
-
-    'handlers': {
-        'log_file': {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(BASE_DIR, '../walmart_log.log'),
-            'maxBytes': 1024 * 1024 * 5,
-            'formatter': 'verbose',
-        },
-        'null': {
-            'class': 'django.utils.log.NullHandler',
-        },
-    },
-
-    'loggers': {
-        'django.request': {
-            'handlers': ['log_file'],
-            'propagate': True,
-            'level': 'DEBUG',
-        },
-        'django': {
-            'handlers': ['null', ],
-        },
-        'walmart_log': {
-            'handlers': ['log_file'],
-            'level': 'DEBUG',
-        },
-    }
-}
-
-CELERY_RESULT_BACKEND = "redis"
-CELERY_REDIS_HOST = "localhost"
-CELERY_REDIS_PORT = 6379
-CELERY_REDIS_DB = 0
-
-BROKER_URL = "redis://%s:%s/%s" % (
-    CELERY_REDIS_HOST, CELERY_REDIS_PORT, CELERY_REDIS_DB)

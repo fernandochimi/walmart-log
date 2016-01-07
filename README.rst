@@ -22,7 +22,7 @@ To use Walmart Log, you need to install some libraries and modules:
 
 After you complete the instalation of libraries, you can install this:
 ::
-	$ pip install wal-log
+	$ pip install -r requirements.txt
 
 
 Types
@@ -39,6 +39,8 @@ Response:
 		"name": "Caminhão",
 		"slug": "caminhao",
 	}
+
+curl -X GET http://localhost:8000/api/v1/type/?token={valid}
 
 Brand
 ----------------
