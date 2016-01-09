@@ -72,7 +72,7 @@ class Transport(models.Model):
     name = models.CharField(
         u'name', max_length=255, help_text='Ex: Marcopolo Audace 1050 HK')
     slug = models.SlugField(u'slug', unique=True)
-    sign = models.CharField(u'sign', max_length=50, null=True, blank=True)
+    sign = models.CharField(u'sign', max_length=20, null=True, blank=True)
     autonomy = models.DecimalField(
         u'autonomy', default=0, decimal_places=2, max_digits=8,
         help_text='On kilometers. Ex: 12.2')
@@ -90,6 +90,9 @@ class Transport(models.Model):
 class City(models.Model):
     name = models.CharField(u'name', max_length=255, unique=True)
     slug = models.SlugField(u'slug', unique=True)
+    date_added = models.DateTimeField(
+        default=datetime.now)
+    is_active = models.BooleanField(default=True)
 
     def __unicode__(self):
         return u'{0}'.format(self.name)
