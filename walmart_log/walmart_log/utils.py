@@ -3,6 +3,4 @@ from django.conf import settings
 
 GOOGLE_MAPS_API_KEY = getattr(settings, 'GOOGLE_MAPS_API_KEY', '')
 
-GOOGLE_MAPS_URL = 'https://maps.googleapis.com/maps/api/'
-API_DIRECTIONS = 'directions/'
-OUTPUT_JSON = 'json?'
+API_URL_DIRECTIONS = 'https://maps.googleapis.com/maps/api/directions/json?'

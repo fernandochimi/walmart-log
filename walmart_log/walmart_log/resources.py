@@ -1,10 +1,8 @@
 # coding: utf-8
 import logging
-import json
 import requests
 
 from django.core.paginator import Paginator
-from django.conf.urls import patterns, url
 
 from restless.dj import DjangoResource
 from restless.exceptions import NotFound, Unauthorized
@@ -12,8 +10,7 @@ from restless.preparers import FieldsPreparer
 from restless.resources import skip_prepare
 
 from models import Token, Type, Brand, Transport, Map
-from utils import GOOGLE_MAPS_API_KEY,\
-    GOOGLE_MAPS_URL, API_DIRECTIONS, OUTPUT_JSON
+from utils import API_URL_DIRECTIONS, GOOGLE_MAPS_API_KEY
 
 logger = logging.getLogger('walmart_log.walmart_log.resources')
 
@@ -77,34 +74,46 @@ class BaseResource(DjangoResource):
         return data
 
     def get_google_info(self, origin, destination, waypoints):
-        # try:
-        response = requests.get(
-            GOOGLE_MAPS_URL + API_DIRECTIONS + OUTPUT_JSON +
-            'origin={0}&destination={1}' +
-            '&waypoints=optimize:true|{2}&key={3}'.format(
-                origin, destination, waypoints,
-                GOOGLE_MAPS_API_KEY), timeout=5).json()
-        # print response.url
-        return self.prepare_google_info(response).value
-        # response = requests.get(
-        #     GOOGLE_MAPS_URL + API_DIRECTIONS + OUTPUT_JSON +
-        #     'origin={0}&destination={1}&key={2}'.format(
-        #         origin, destination,
-        #         GOOGLE_MAPS_API_KEY), timeout=5).json()
-        # return self.prepare_google_info(response).value
-        # except:
-        #     return False
+        try:
+            response = requests.get(
+                API_URL_DIRECTIONS +
+                'origin={0}&destination={1}&key={2}&waypoints=optimize:true|{3}'.format(
+                    origin, destination, GOOGLE_MAPS_API_KEY,
+                    waypoints), timeout=5).json()
+            return self.prepare_google_info(response).value
+        except:
+            return False
 
     @skip_prepare
     def prepare_google_info(self, google_info):
-        print google_info.get('routes', ['legs'])
-        print dir(google_info.get('routes'))
-        # google_data = {
-        #     'city_origin': google_info.get('routes').get('legs').get('start_address', ''),
-        #     'city_destiny': google_info.get('routes').get('legs').get('end_address', ''),
-        # }
-        return google_info.get('routes', ['legs'])
-        print google_data
+        routes = google_info.get('routes')[0]
+        info = routes.get('legs')
+        waypoint_order = routes.get('waypoint_order')
+
+        try:
+            waypoint_list = self.request.GET.get('waypoints').split("|")
+
+            # wp_list_len = len(waypoint_list)
+            # waypoint_list = range(0, wp_list_len)
+
+            print waypoint_list
+        except:
+            pass
+
+        list_info = []
+
+        for i in info:
+            info_route = {
+                'distance': i.get('distance').get('value'),
+                'start_address': i.get('start_address'),
+                'end_address': i.get('end_address'),
+            }
+            list_info.append(info_route)
+
+        google_data = {
+            'waypoint_order': waypoint_order,
+            'info': list_info,
+        }
         return google_data
 
     # def prepare(self, data):
