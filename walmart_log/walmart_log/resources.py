@@ -27,7 +27,7 @@ class BaseResource(DjangoResource):
 
     def not_found(self, class_name, id_data):
         raise NotFound(
-            msg="404 - {0} with id {1} not found".format(class_name, id_data))
+            msg="404 - {0} with ID {1} not found".format(class_name, id_data))
 
     def filters(self, request):
         items = {}
