@@ -106,16 +106,16 @@ class Map(models.Model):
     name = models.CharField(
         u'name', help_text=u"Ex: SP Map, MG Map", max_length=255)
     slug = models.SlugField(u'slug', unique=True)
+    transport = models.ForeignKey(Transport, related_name='transport_set')
     city_origin = models.ForeignKey(City, related_name='cityorigin_set')
     city_destiny = models.ForeignKey(City, related_name='citydestiny_set')
-    transport = models.ForeignKey(Transport, related_name='transport_set')
+    total_distance = models.DecimalField(
+        u'total distance', default=0, decimal_places=2, max_digits=5,
+        null=True, blank=True)
     gas_value = models.DecimalField(
         u'gas value', default=0, decimal_places=2, max_digits=5,
         null=True, blank=True)
-    other_coasts = models.DecimalField(
-        u'other coasts', default=0, decimal_places=2, max_digits=5,
-        null=True, blank=True)
-    coast_percent = models.DecimalField(
+    cost_percent = models.DecimalField(
         u'coast percent', default=0, decimal_places=2, max_digits=5,
         null=True, blank=True)
     date_added = models.DateTimeField(
@@ -124,6 +124,11 @@ class Map(models.Model):
 
     def __unicode__(self):
         return u'{0}'.format(self.name)
+
+    def calculate_cost_percent(self):
+        self.cost_percent = (
+            self.total_distance * self.gas_value) / self.transport.autonomy
+        return self.cost_percent.save()
 
     class Meta:
         verbose_name, verbose_name_plural = "Map", "Maps"

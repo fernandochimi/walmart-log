@@ -15,6 +15,6 @@ urlpatterns = patterns(
     url(
         r'^api/v1/map/(?P<slug>[-_\w]+)/$',
         MapResource.as_detail(), name='map_detail'),
-    url(r'api/v1/map/(?P<slug>[-_\w]+)/get-map/$',
+    url(r'api/v1/get-map/$',
         MapResource.as_view('get_map'), name='get_map'),
 )

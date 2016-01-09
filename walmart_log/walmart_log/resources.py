@@ -80,12 +80,12 @@ class BaseResource(DjangoResource):
                 'origin={0}&destination={1}&key={2}&waypoints=optimize:true|{3}'.format(
                     origin, destination, GOOGLE_MAPS_API_KEY,
                     waypoints), timeout=5).json()
-            return self.prepare_google_info(response).value
+            return self.prepare_route_data_info(response).value
         except:
             return False
 
     @skip_prepare
-    def prepare_google_info(self, google_info):
+    def prepare_route_data_info(self, google_info):
         waypoint_order = google_info.get('routes')[0].get('waypoint_order')
 
         origin = self.request.GET.get('origin')
@@ -107,27 +107,22 @@ class BaseResource(DjangoResource):
                 'distance': i.get('distance').get('value'),
                 'start_address': i.get('start_address'),
                 'end_address': i.get('end_address'),
-                'transport_sign': self.request.GET.get('transport_sign')
             }
             list_info.append(info_route)
 
-        google_data = {
-            'waypoint_order': waypoint_order,
-            'waypoint_list': waypoint_list,
-            'logistic_order': logistic_order,
-            'info': list_info,
+        return {
+            # 'waypoint_order': waypoint_order,  # Remove after
+            # 'waypoint_list': waypoint_list,  # Remove after
+            # 'info': list_info,  # Remove after
+            'logistic_order': logistic_order,  # Remove after
+            'name': self.request.GET.get('name'),
+            'slug': self.request.GET.get('slug'),
+            'transport_sign': self.request.GET.get('transport_sign'),
+            'city_origin': list_info[0].get('start_address'),
+            'city_destiny': list_info[-1].get('end_address'),
+            'total_distance': sum([i.get('distance') for i in list_info]),
+            'gas_value': self.request.GET.get('gas_value'),
         }
-        return google_data
-        # return {
-        #     'name': 'name',
-        #     'slug': 'slug',
-        #     'city_origin': 'city_origin',
-        #     'city_destiny': 'city_destiny',
-        #     'transport': 'transport.sig',
-        #     'gas_value': 'gas_value',
-        #     'other_coasts': 'other_coasts',
-        #     'coast_percent': 'coast_percent',
-        # }
 
     # def prepare(self, data):
     #     prepped = super(BaseResource, self).prepare(data)
@@ -308,12 +303,14 @@ class MapResource(BaseResource):
         'id': 'id',
         'name': 'name',
         'slug': 'slug',
+        'transport': 'transport',
         'city_origin': 'city_origin',
         'city_destiny': 'city_destiny',
-        'transport': 'transport',
+        'total_distance': 'total_distance',
         'gas_value': 'gas_value',
-        'other_coasts': 'other_coasts',
-        'coast_percent': 'coast_percent',
+        'cost_percent': 'cost_percent',
+        'date_added': 'date_added',
+        'is_active': 'is_active',
     }
 
     def __init__(self, *args, **kwargs):
