@@ -32,59 +32,9 @@ class Token(models.Model):
         verbose_name, verbose_name_plural = "Token", "Token"
 
 
-class Country(models.Model):
-    name = models.CharField(u'name', max_length=255, unique=True)
-    uf = models.CharField(u'uf', max_length=2)
-
-    def __unicode__(self):
-        return u'{0}'.format(self.uf)
-
-    class Meta:
-        verbose_name, verbose_name_plural = "Country", "Countries"
-
-
-class State(models.Model):
-    country = models.ForeignKey(Country, related_name='state_set')
-    name = models.CharField(u'name', max_length=255, unique=True)
-    uf = models.CharField(u'uf', max_length=2)
-
-    def __unicode__(self):
-        return u'{0} - {1}'.format(self.country.uf, self.name)
-
-    class Meta:
-        verbose_name, verbose_name_plural = "State", "States"
-
-
-class City(models.Model):
-    state = models.ForeignKey(State, related_name='city_set')
-    name = models.CharField(u'name', max_length=255, unique=True)
-
-    def __unicode__(self):
-        return u'{0} - {1}'.format(self.state.uf, self.name)
-
-    class Meta:
-        verbose_name, verbose_name_plural = "City", "Cities"
-
-
-class ZipCode(models.Model):
-    zipcode = models.CharField(u'zipcode', max_length=8, unique=True)
-    city = models.ForeignKey(City, related_name='zipcode_set')
-    address = models.CharField(
-        u'address', max_length=255, null=True, blank=True)
-    complement = models.CharField(
-        u'complement', max_length=255, null=True, blank=True)
-    area = models.CharField(
-        u'area', max_length=255, null=True, blank=True)
-
-    def __unicode__(self):
-        return u'{0} - {1}'.format(self.city.name, self.zipcode)
-
-    class Meta:
-        verbose_name, verbose_name_plural = "ZipCode", "ZipCodes"
-
-
 class Type(models.Model):
-    name = models.CharField(u'name', max_length=255)
+    name = models.CharField(
+        u'name', help_text=u"Ex: Truck, Bus, Car", max_length=255)
     slug = models.SlugField(u'slug', unique=True)
     date_added = models.DateTimeField(
         default=datetime.now)
@@ -98,7 +48,8 @@ class Type(models.Model):
 
 
 class Brand(models.Model):
-    name = models.CharField(u'name', max_length=255)
+    name = models.CharField(
+        u'name', help_text=u"Ex: Scania, Volvo", max_length=255)
     slug = models.SlugField(u'slug', unique=True)
     date_added = models.DateTimeField(
         default=datetime.now)
@@ -136,8 +87,21 @@ class Transport(models.Model):
         verbose_name, verbose_name_plural = "Transport", "Transports"
 
 
+class City(models.Model):
+    name = models.CharField(u'name', max_length=255, unique=True)
+    slug = models.SlugField(u'slug', unique=True)
+
+    def __unicode__(self):
+        return u'{0}'.format(self.name)
+
+    class Meta:
+        verbose_name, verbose_name_plural = "City", "Cities"
+
+
 class Map(models.Model):
-    name = models.CharField(u'name', max_length=255)
+    name = models.CharField(
+        u'name', help_text=u"Ex: SP Map, MG Map", max_length=255)
+    slug = models.SlugField(u'slug', unique=True)
     city_origin = models.ForeignKey(City, related_name='cityorigin_set')
     city_destiny = models.ForeignKey(City, related_name='citydestiny_set')
     transport = models.ForeignKey(Transport, related_name='transport_set')

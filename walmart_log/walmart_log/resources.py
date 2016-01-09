@@ -3,18 +3,17 @@ import logging
 import json
 import requests
 
-from datetime import datetime
-
 from django.core.paginator import Paginator
 from django.conf.urls import patterns, url
 
 from restless.dj import DjangoResource
+from restless.exceptions import NotFound, Unauthorized
 from restless.preparers import FieldsPreparer
 from restless.resources import skip_prepare
 
 from models import Token, Type, Brand, Transport, Map
 from utils import GOOGLE_MAPS_API_KEY,\
-    GOOGLE_MAPS_URL, DISTANCE_MATRIX_API, OUTPUT_JSON
+    GOOGLE_MAPS_URL, API_DIRECTIONS, OUTPUT_JSON
 
 logger = logging.getLogger('walmart_log.walmart_log.resources')
 
@@ -25,6 +24,10 @@ class BaseResource(DjangoResource):
     dict_filters = {}
 
     preparer = FieldsPreparer(fields={})
+
+    def not_found(self, class_name, id_data):
+        raise NotFound(
+            msg="404 - {0} with id {1} not found".format(class_name, id_data))
 
     def filters(self, request):
         items = {}
@@ -38,7 +41,7 @@ class BaseResource(DjangoResource):
             self.token = Token.objects.get(token=self.request.GET.get('token'))
             return True
         except Token.DoesNotExist:
-            return False
+            raise Unauthorized
 
     def serialize_list(self, data):
         data = self.paginate(data)
@@ -70,12 +73,12 @@ class BaseResource(DjangoResource):
         data['objects'] = self.paginator.page(self.page).object_list
         return data
 
-    def get_google_info(self, origins, destinations):
+    def get_google_info(self, origin, destination, waypoints=None):
         try:
             google_info = requests.get(
-                GOOGLE_MAPS_URL + DISTANCE_MATRIX_API + OUTPUT_JSON
-                + 'origins={0}&destinations={1}&key={2}'.format(
-                    origins, destinations, GOOGLE_MAPS_API_KEY))
+                GOOGLE_MAPS_URL + API_DIRECTIONS + OUTPUT_JSON
+                + 'origin={0}&destination={1}&key={2}'.format(
+                    origin, destination, GOOGLE_MAPS_API_KEY))
             return json.loads(google_info)
         except:
             return False
@@ -83,8 +86,8 @@ class BaseResource(DjangoResource):
     @skip_prepare
     def prepare_google_info(self, google_info):
         google_data = {
-            'city_origin': google_info.get('origins', ''),
-            'city_destiny': google_info.get('destinations', ''),
+            'city_origin': google_info.get('origin', ''),
+            'city_destiny': google_info.get('destination', ''),
         }
         return google_data
 
@@ -98,6 +101,7 @@ class BaseResource(DjangoResource):
 
 class TypeResource(BaseResource):
     fields = {
+        'id': 'id',
         'name': 'name',
         'slug': 'slug',
         'date_added': 'date_added',
@@ -115,7 +119,10 @@ class TypeResource(BaseResource):
 
     def detail(self, pk):
         self.preparer.fields = self.fields
-        return self.queryset(request=self.request).get(id=pk)
+        try:
+            return self.queryset(request=self.request).get(id=pk)
+        except Type.DoesNotExist:
+            return self.not_found(self.__class__.__name__, pk)
 
     def create(self):
         return Type.objects.create(
@@ -127,7 +134,7 @@ class TypeResource(BaseResource):
         try:
             up_type = self.queryset(request=self.request).get(id=pk)
         except Type.DoesNotExist:
-            return Type()
+            return self.not_found(self.__class__.__name__, pk)
         up_type.name = self.data['name']
         up_type.slug = self.data['slug']
         up_type.save()
@@ -139,6 +146,7 @@ class TypeResource(BaseResource):
 
 class BrandResource(BaseResource):
     fields = {
+        'id': 'id',
         'name': 'name',
         'slug': 'slug',
         'date_added': 'date_added',
@@ -156,7 +164,10 @@ class BrandResource(BaseResource):
 
     def detail(self, pk):
         self.preparer.fields = self.fields
-        return self.queryset(request=self.request).get(id=pk)
+        try:
+            return self.queryset(request=self.request).get(id=pk)
+        except:
+            return self.not_found(self.__class__.__name__, pk)
 
     def create(self):
         return Brand.objects.create(
@@ -168,7 +179,7 @@ class BrandResource(BaseResource):
         try:
             brand = self.queryset(request=self.request).get(id=pk)
         except Brand.DoesNotExist:
-            return Brand()
+            return self.not_found(self.__class__.__name__, pk)
         brand.name = self.data['name']
         brand.slug = self.data['slug']
         brand.save()
@@ -180,6 +191,7 @@ class BrandResource(BaseResource):
 
 class TransportResource(BaseResource):
     preparer_list = {
+        'id': 'id',
         'name': 'name',
         'slug': 'slug',
         'date_added': 'date_added',
@@ -187,6 +199,7 @@ class TransportResource(BaseResource):
     }
 
     preparer_detail = {
+        'id': 'id',
         'transport_way': 'transport_way',
         'transport_type': 'transport_type.slug',
         'brand': 'brand.slug',
@@ -209,7 +222,10 @@ class TransportResource(BaseResource):
 
     def detail(self, pk):
         self.preparer.fields = self.preparer_detail
-        return self.queryset(request=self.request).get(id=pk)
+        try:
+            return self.queryset(request=self.request).get(id=pk)
+        except:
+            return self.not_found(self.__class__.__name__, pk)
 
     def create(self):
         return Transport.objects.create(
@@ -226,7 +242,7 @@ class TransportResource(BaseResource):
         try:
             transport = Transport.objects.get(id=pk)
         except Transport.DoesNotExist:
-            return Transport()
+            return self.not_found(self.__class__.__name__, pk)
         transport.transport_way = self.data['transport_way']
         transport.transport_type = Type.objects.get(
             slug=self.data['transport_type'])
@@ -280,8 +296,8 @@ class MapResource(BaseResource):
         self.preparer.fields = self.preparer_detail
         return self.queryset(request=self.request).get(id=pk)
 
-    def get_map(self, origins, destinations):
-        google_info = self.get_google_info(origins, destinations)
+    def get_map(self, origin, destination):
+        google_info = self.get_google_info(origin, destination, waypoints)
         return google_info
 
     @classmethod
