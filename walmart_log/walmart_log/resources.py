@@ -267,6 +267,7 @@ class MapResource(BaseResource):
     preparer_detail = {
         'id': 'id',
         'name': 'name',
+        'slug': 'slug',
         'city_origin': 'city_origin',
         'city_destiny': 'city_destiny',
         'transport': 'transport',
@@ -294,7 +295,10 @@ class MapResource(BaseResource):
 
     def detail(self, pk):
         self.preparer.fields = self.preparer_detail
-        return self.queryset(request=self.request).get(id=pk)
+        try:
+            return self.queryset(request=self.request).get(id=pk)
+        except:
+            return self.not_found(self.__class__.__name__, pk)
 
     def get_map(self, origin, destination):
         google_info = self.get_google_info(origin, destination, waypoints)
