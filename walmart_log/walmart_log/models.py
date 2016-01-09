@@ -72,7 +72,8 @@ class Transport(models.Model):
     name = models.CharField(
         u'name', max_length=255, help_text='Ex: Marcopolo Audace 1050 HK')
     slug = models.SlugField(u'slug', unique=True)
-    sign = models.CharField(u'sign', max_length=20, null=True, blank=True)
+    sign = models.CharField(
+        u'sign', max_length=20, null=True, blank=True, unique=True)
     autonomy = models.DecimalField(
         u'autonomy', default=0, decimal_places=2, max_digits=8,
         help_text='On kilometers. Ex: 12.2')

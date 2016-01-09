@@ -86,35 +86,48 @@ class BaseResource(DjangoResource):
 
     @skip_prepare
     def prepare_google_info(self, google_info):
-        routes = google_info.get('routes')[0]
-        info = routes.get('legs')
-        waypoint_order = routes.get('waypoint_order')
+        waypoint_order = google_info.get('routes')[0].get('waypoint_order')
 
+        origin = self.request.GET.get('origin')
+        destination = self.request.GET.get('destination')
+        waypoint_list = []
+        logistic_order = []
         try:
             waypoint_list = self.request.GET.get('waypoints').split("|")
-
-            # wp_list_len = len(waypoint_list)
-            # waypoint_list = range(0, wp_list_len)
-
-            print waypoint_list
+            logistic_order = [waypoint_list[i] for i in waypoint_order]
         except:
             pass
+        logistic_order.insert(0, origin)
+        logistic_order.insert(len(waypoint_order)+1, destination)
 
+        info = google_info.get('routes')[0].get('legs')
         list_info = []
-
         for i in info:
             info_route = {
                 'distance': i.get('distance').get('value'),
                 'start_address': i.get('start_address'),
                 'end_address': i.get('end_address'),
+                'transport_sign': self.request.GET.get('transport_sign')
             }
             list_info.append(info_route)
 
         google_data = {
             'waypoint_order': waypoint_order,
+            'waypoint_list': waypoint_list,
+            'logistic_order': logistic_order,
             'info': list_info,
         }
         return google_data
+        # return {
+        #     'name': 'name',
+        #     'slug': 'slug',
+        #     'city_origin': 'city_origin',
+        #     'city_destiny': 'city_destiny',
+        #     'transport': 'transport.sig',
+        #     'gas_value': 'gas_value',
+        #     'other_coasts': 'other_coasts',
+        #     'coast_percent': 'coast_percent',
+        # }
 
     # def prepare(self, data):
     #     prepped = super(BaseResource, self).prepare(data)
@@ -287,6 +300,8 @@ class MapResource(BaseResource):
     preparer_list = {
         'id': 'id',
         'name': 'name',
+        'slug': 'slug',
+        'transport': 'transport.sign',
     }
 
     preparer_detail = {
