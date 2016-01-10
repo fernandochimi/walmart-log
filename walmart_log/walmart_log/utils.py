@@ -3,6 +3,7 @@ import re
 import unicodedata
 
 from datetime import datetime
+from decimal import Decimal
 
 from django.conf import settings
 from django.utils.safestring import mark_safe
@@ -22,4 +23,6 @@ def slugify(value):
 def jdefault(o):
     if type(o) is datetime.date or type(o) is datetime:
         return o.isoformat()
+    if type(o) is Decimal:
+        return str(o)
     return o.__dict__

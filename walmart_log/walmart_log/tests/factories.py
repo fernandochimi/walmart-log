@@ -34,7 +34,6 @@ class TokenFactory(factory.django.DjangoModelFactory):
 class TypeFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Type
-        django_get_or_create = ('slug',)
 
     name = factory.Sequence(lambda n: u"Type%s" % n)
     slug = factory.LazyAttributeSequence(
