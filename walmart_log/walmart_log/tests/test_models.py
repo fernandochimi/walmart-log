@@ -38,9 +38,8 @@ class TransportTest(TestCase):
 
     def test_01_unicode(self):
         "Transport must be a unicode"
-        self.assertEqual(unicode(
-            self.transport), u"{0} - {1}".format(
-            self.brand.name, self.transport.name))
+        self.assertEqual(unicode(self.transport), u"{0} - {1}".format(
+            self.transport.brand.name, self.transport.name))
 
 
 class CityTest(TestCase):
