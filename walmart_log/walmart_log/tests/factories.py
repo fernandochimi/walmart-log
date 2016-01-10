@@ -34,7 +34,7 @@ class TypeFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Type
 
-    name = factory.Sequence(lambda n: u"Type %s" % n)
+    name = factory.Sequence(lambda n: u"Type%s" % n)
     slug = factory.LazyAttributeSequence(
         lambda o, n: u"%s-%d" % (o.name.lower(), n))
     date_added = datetime.now()
@@ -45,7 +45,7 @@ class BrandFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Brand
 
-    name = factory.Sequence(lambda n: u"Brand %s" % n)
+    name = factory.Sequence(lambda n: u"Brand%s" % n)
     slug = factory.LazyAttributeSequence(
         lambda o, n: u"%s-%d" % (o.name.lower(), n))
     date_added = datetime.now()
@@ -60,7 +60,7 @@ class TransportFactory(factory.django.DjangoModelFactory):
         TRANSPORT_WAY_CHOICES, getter=lambda c: c[0])
     transport_type = factory.SubFactory(TypeFactory)
     brand = factory.SubFactory(BrandFactory)
-    name = factory.Sequence(lambda n: u"Vehicle %s" % n)
+    name = factory.Sequence(lambda n: u"Vehicle%s" % n)
     slug = factory.LazyAttributeSequence(
         lambda o, n: u"%s-%d" % (o.name.lower(), n))
     sign = factory.Sequence(lambda n: u"XXX-00%s" % n)
@@ -73,7 +73,7 @@ class CityFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = City
 
-    name = factory.Sequence(lambda n: u"City %s" % n)
+    name = factory.Sequence(lambda n: u"City%s" % n)
     slug = factory.LazyAttributeSequence(
         lambda o, n: u"%s-%d" % (o.name.lower(), n))
     date_added = datetime.now()
@@ -84,7 +84,7 @@ class MapFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Map
 
-    name = factory.Sequence(lambda n: u"Map %s" % n)
+    name = factory.Sequence(lambda n: u"Map%s" % n)
     slug = factory.LazyAttributeSequence(
         lambda o, n: u"%s-%d" % (o.name.lower(), n))
     transport = factory.SubFactory(TransportFactory)
