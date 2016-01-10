@@ -115,9 +115,6 @@ class BaseResource(DjangoResource):
         sum_distance = sum([i.get('distance') for i in list_info])
 
         route_data = {
-            # 'waypoint_order': waypoint_order,  # Remove after
-            # 'waypoint_list': waypoint_list,  # Remove after
-            # 'info': list_info,  # Remove after
             'logistic_order': logistic_order,  # Remove after
             'name': self.request.GET.get('name'),
             'slug': self.request.GET.get('slug'),
@@ -131,12 +128,15 @@ class BaseResource(DjangoResource):
         create_map.delay(route_data)
         return route_data
 
-    # def prepare(self, data):
-    #     prepped = super(BaseResource, self).prepare(data)
-    #     date_added = prepped['date_added']
-    #     format_date = '%Y-%m-%d %H:%M:%S'
-    #     prepped['date_added'] = date_added.strftime(format_date)
-    #     return prepped
+    def prepare(self, data):
+        prepped = super(BaseResource, self).prepare(data)
+        try:
+            date_added = prepped['date_added']
+            format_date = '%Y-%m-%d %H:%M:%S'
+            prepped['date_added'] = date_added.strftime(format_date)
+        except:
+            pass
+        return prepped
 
 
 class TypeResource(BaseResource):
@@ -337,8 +337,8 @@ class MapResource(BaseResource):
         'name': 'name',
         'slug': 'slug',
         'transport': 'transport.sign',
-        'city_origin': 'city_origin',
-        'city_destiny': 'city_destiny',
+        'city_origin': 'city_origin.name',
+        'city_destiny': 'city_destiny.name',
         'total_distance': 'total_distance',
         'gas_value': 'gas_value',
         'cost_percent': 'cost_percent',
@@ -361,13 +361,11 @@ class MapResource(BaseResource):
 
     def list(self):
         self.preparer.fields = self.preparer_list
-        print self.queryset(request=self.request)
         return self.queryset(request=self.request)
 
     def detail(self, slug):
         self.preparer.fields = self.preparer_detail
         try:
-            print self.queryset(request=self.request).get(slug=slug)
             return self.queryset(request=self.request).get(slug=slug)
         except:
             return self.not_found(self.__class__.__name__, "SLUG", slug)
