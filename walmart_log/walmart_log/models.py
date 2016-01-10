@@ -109,6 +109,7 @@ class Map(models.Model):
     transport = models.ForeignKey(Transport, related_name='transport_set')
     city_origin = models.ForeignKey(City, related_name='cityorigin_set')
     city_destiny = models.ForeignKey(City, related_name='citydestiny_set')
+    logistic_order = models.TextField(null=True, blank=True)
     total_distance = models.DecimalField(
         u'total distance', default=0, decimal_places=2, max_digits=11,
         null=True, blank=True)

@@ -38,6 +38,7 @@ def create_map(map_info):
         transport=Transport.objects.get(sign=map_info['transport_sign']),
         city_origin=City.objects.get(slug=city_origin.slug),
         city_destiny=City.objects.get(slug=city_destiny.slug),
+        logistic_order=", ".join([i for i in map_info['logistic_order']]),
         total_distance=map_info['total_distance'],
         gas_value=Decimal(map_info['gas_value'].replace(",", ".")))
     logger.info(

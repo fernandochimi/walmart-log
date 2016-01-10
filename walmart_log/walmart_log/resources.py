@@ -115,7 +115,7 @@ class BaseResource(DjangoResource):
         sum_distance = sum([i.get('distance') for i in list_info])
 
         route_data = {
-            'logistic_order': logistic_order,  # Remove after
+            'logistic_order': logistic_order,
             'name': self.request.GET.get('name'),
             'slug': self.request.GET.get('slug'),
             'transport_sign': self.request.GET.get('transport_sign'),
@@ -339,6 +339,7 @@ class MapResource(BaseResource):
         'transport': 'transport.sign',
         'city_origin': 'city_origin.name',
         'city_destiny': 'city_destiny.name',
+        'logistic_order': 'logistic_order',
         'total_distance': 'total_distance',
         'gas_value': 'gas_value',
         'cost_percent': 'cost_percent',
