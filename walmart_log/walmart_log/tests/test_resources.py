@@ -5,9 +5,7 @@ import factory
 from datetime import datetime
 
 from django.test import TestCase
-from django.template.defaultfilters import slugify
 
-from walmart_log.models import TRANSPORT_WAY_CHOICES
 from walmart_log.tasks import create_map
 from walmart_log.utils import jdefault
 
@@ -73,13 +71,36 @@ class TypeResourceTest(BaseResourceTest):
             self.token.token))
         self.assertEqual(response.status_code, 404)
 
-    # def test_04_create_type(self):
-    #     "Create a type"
-    #     response = self.client.post("/api/v1/type/?token={0}".format(
-    #         self.token.token), json.dumps(self.new_type, default=jdefault),
-    #         content_type="application/json")
-    #     print response
-    #     self.assertEqual(response.status_code, 201)
+    def test_04_create_type(self):
+        "Create a type"
+        response = self.client.post("/api/v1/type/?token={0}".format(
+            self.token.token), json.dumps(self.new_type, default=jdefault),
+            content_type="application/json")
+        self.assertEqual(response.status_code, 201)
+
+    def test_05_update_type(self):
+        "Update a type"
+        self.new_type.slug = "new-update-type"
+        self.new_type.save()
+        response = self.client.put("/api/v1/type/{0}/?token={1}".format(
+            self.new_type.id, self.token.token),
+            json.dumps(self.new_type, default=jdefault))
+        self.assertEqual(response.status_code, 202)
+
+    def test_06_update_type_does_not_exist(self):
+        "Update a type that does not exist"
+        self.new_type.slug = "new-update-type"
+        self.new_type.save()
+        response = self.client.put("/api/v1/type/0/?token={1}".format(
+            self.new_type.id, self.token.token),
+            json.dumps(self.new_type, default=jdefault))
+        self.assertEqual(response.status_code, 404)
+
+    def test_05_delete_type(self):
+        "Delete a type"
+        response = self.client.delete("/api/v1/type/{0}/?token={1}".format(
+            self.new_type.id, self.token.token))
+        self.assertEqual(response.status_code, 204)
 
 
 class BrandResourceTest(BaseResourceTest):
@@ -101,12 +122,36 @@ class BrandResourceTest(BaseResourceTest):
             self.token.token))
         self.assertEqual(response.status_code, 404)
 
-    # def test_04_create_brand(self):
-    #     "Create a brand"
-    #     response = self.client.post("/api/v1/brand/?token={0}".format(
-    #         self.token.token), json.dumps(self.new_brand, default=jdefault),
-    #         content_type="application/json")
-    #     self.assertEqual(response.status_code, 201)
+    def test_04_create_brand(self):
+        "Create a brand"
+        response = self.client.post("/api/v1/brand/?token={0}".format(
+            self.token.token), json.dumps(self.new_brand, default=jdefault),
+            content_type="application/json")
+        self.assertEqual(response.status_code, 201)
+
+    def test_05_update_brand(self):
+        "Update a brand"
+        self.new_brand.slug = "new-update-brand"
+        self.new_brand.save()
+        response = self.client.put("/api/v1/brand/{0}/?token={1}".format(
+            self.new_brand.id, self.token.token),
+            json.dumps(self.new_brand, default=jdefault))
+        self.assertEqual(response.status_code, 202)
+
+    def test_06_update_brand_does_not_exist(self):
+        "Update a brand that does not exist"
+        self.new_brand.slug = "new-update-brand"
+        self.new_brand.save()
+        response = self.client.put("/api/v1/brand/0/?token={1}".format(
+            self.new_brand.id, self.token.token),
+            json.dumps(self.new_brand, default=jdefault))
+        self.assertEqual(response.status_code, 404)
+
+    def test_05_delete_brand(self):
+        "Delete a brand"
+        response = self.client.delete("/api/v1/brand/{0}/?token={1}".format(
+            self.new_brand.id, self.token.token))
+        self.assertEqual(response.status_code, 204)
 
 
 class TransportResourceTest(BaseResourceTest):
@@ -134,6 +179,7 @@ class TransportResourceTest(BaseResourceTest):
     #         self.token.token), json.dumps(
     #         self.new_transport, default=jdefault),
     #         content_type="application/json")
+    #     print response
     #     self.assertEqual(response.status_code, 201)
 
 

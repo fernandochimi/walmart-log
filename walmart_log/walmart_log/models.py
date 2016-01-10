@@ -6,6 +6,8 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from django.db import models
 
+from utils import unique_slugify
+
 GROUND, AIR, WATER = range(1, 4)
 
 TRANSPORT_WAY_CHOICES = (
@@ -43,6 +45,11 @@ class Type(models.Model):
     def __unicode__(self):
         return u'{0}'.format(self.name)
 
+    def save(self, *args, **kwargs):
+        slug_str = "%s" % self.name
+        unique_slugify(self, slug_str)
+        super(Type, self).save(*args, **kwargs)
+
     class Meta:
         verbose_name, verbose_name_plural = "Type", "Types"
 
@@ -57,6 +64,11 @@ class Brand(models.Model):
 
     def __unicode__(self):
         return u'{0}'.format(self.name)
+
+    def save(self, *args, **kwargs):
+        slug_str = "%s" % self.name
+        unique_slugify(self, slug_str)
+        super(Brand, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name, verbose_name_plural = "Brand", "Brands"
@@ -84,6 +96,11 @@ class Transport(models.Model):
     def __unicode__(self):
         return u'{0} - {1}'.format(self.brand.name, self.name)
 
+    def save(self, *args, **kwargs):
+        slug_str = "%s" % self.name
+        unique_slugify(self, slug_str)
+        super(Transport, self).save(*args, **kwargs)
+
     class Meta:
         verbose_name, verbose_name_plural = "Transport", "Transports"
 
@@ -97,6 +114,11 @@ class City(models.Model):
 
     def __unicode__(self):
         return u'{0}'.format(self.name)
+
+    def save(self, *args, **kwargs):
+        slug_str = "%s" % self.name
+        unique_slugify(self, slug_str)
+        super(City, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name, verbose_name_plural = "City", "Cities"
@@ -127,6 +149,8 @@ class Map(models.Model):
         return u'{0}'.format(self.name)
 
     def save(self, *args, **kwargs):
+        slug_str = "%s" % self.name
+        unique_slugify(self, slug_str)
         self.cost_percent = (
             self.total_distance * self.gas_value) / self.transport.autonomy
         super(Map, self).save(*args, **kwargs)
