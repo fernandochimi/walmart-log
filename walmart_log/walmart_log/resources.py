@@ -10,6 +10,7 @@ from restless.preparers import FieldsPreparer
 from restless.resources import skip_prepare
 
 from models import Token, Type, Brand, Transport, Map
+from tasks import create_map
 from utils import API_URL_DIRECTIONS, GOOGLE_MAPS_API_KEY
 
 logger = logging.getLogger('walmart_log.walmart_log.resources')
@@ -110,7 +111,7 @@ class BaseResource(DjangoResource):
             }
             list_info.append(info_route)
 
-        return {
+        route_data = {
             # 'waypoint_order': waypoint_order,  # Remove after
             # 'waypoint_list': waypoint_list,  # Remove after
             # 'info': list_info,  # Remove after
@@ -123,6 +124,8 @@ class BaseResource(DjangoResource):
             'total_distance': sum([i.get('distance') for i in list_info]),
             'gas_value': self.request.GET.get('gas_value'),
         }
+        create_map.delay(route_data)
+        return route_data
 
     # def prepare(self, data):
     #     prepped = super(BaseResource, self).prepare(data)
