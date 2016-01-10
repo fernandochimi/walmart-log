@@ -6,6 +6,7 @@ import uuid
 from datetime import datetime
 
 from django.contrib.auth.models import User
+from django.template.defaultfilters import slugify
 
 from walmart_log.models import Token, Type,\
      Brand, Transport, City, Map, TRANSPORT_WAY_CHOICES
@@ -33,10 +34,11 @@ class TokenFactory(factory.django.DjangoModelFactory):
 class TypeFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Type
+        django_get_or_create = ('slug',)
 
     name = factory.Sequence(lambda n: u"Type%s" % n)
     slug = factory.LazyAttributeSequence(
-        lambda o, n: u"%s-%d" % (o.name.lower(), n))
+        lambda o, n: u"%s-%d" % (slugify(o.name), n))
     date_added = datetime.now()
     is_active = True
 
@@ -47,7 +49,7 @@ class BrandFactory(factory.django.DjangoModelFactory):
 
     name = factory.Sequence(lambda n: u"Brand%s" % n)
     slug = factory.LazyAttributeSequence(
-        lambda o, n: u"%s-%d" % (o.name.lower(), n))
+        lambda o, n: u"%s-%d" % (slugify(o.name), n))
     date_added = datetime.now()
     is_active = True
 
@@ -62,7 +64,7 @@ class TransportFactory(factory.django.DjangoModelFactory):
     brand = factory.SubFactory(BrandFactory)
     name = factory.Sequence(lambda n: u"Vehicle%s" % n)
     slug = factory.LazyAttributeSequence(
-        lambda o, n: u"%s-%d" % (o.name.lower(), n))
+        lambda o, n: u"%s-%d" % (slugify(o.name), n))
     sign = factory.Sequence(lambda n: u"XXX-00%s" % n)
     autonomy = factory.fuzzy.FuzzyDecimal(0.1, 99.9, 2)
     date_added = datetime.now()
@@ -75,7 +77,7 @@ class CityFactory(factory.django.DjangoModelFactory):
 
     name = factory.Sequence(lambda n: u"City%s" % n)
     slug = factory.LazyAttributeSequence(
-        lambda o, n: u"%s-%d" % (o.name.lower(), n))
+        lambda o, n: u"%s-%d" % (slugify(o.name), n))
     date_added = datetime.now()
     is_active = True
 
@@ -86,7 +88,7 @@ class MapFactory(factory.django.DjangoModelFactory):
 
     name = factory.Sequence(lambda n: u"Map%s" % n)
     slug = factory.LazyAttributeSequence(
-        lambda o, n: u"%s-%d" % (o.name.lower(), n))
+        lambda o, n: u"%s-%d" % (slugify(o.name), n))
     transport = factory.SubFactory(TransportFactory)
     city_origin = factory.SubFactory(CityFactory)
     city_destiny = factory.SubFactory(CityFactory)

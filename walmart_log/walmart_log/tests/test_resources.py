@@ -1,9 +1,14 @@
 # coding: utf-8
+import json
 import factory
 
+from datetime import datetime
+
 from django.test import TestCase
+from django.template.defaultfilters import slugify
 
 from walmart_log.tasks import create_map
+from walmart_log.utils import jdefault
 
 from factories import TokenFactory, TypeFactory, BrandFactory,\
     TransportFactory, CityFactory, MapFactory
@@ -41,21 +46,20 @@ class TypeResourceTest(BaseResourceTest):
             self.type.id, self.token.token))
         self.assertEqual(response.status_code, 200)
 
-    # def test_03_create_type(self):
-    #     "Create a type"
-    #     new_type = TypeFactory(
-    #         name=factory.Sequence(lambda n: u"NewType%s" % n),
-    #         slug=factory.LazyAttributeSequence(
-    #             lambda o, n: u"%s-%d" % (o.name.lower(), n)),
-    #         date_added=datetime.now(),
-    #         is_active=True,
-    #     )
-    #     print json.dumps(new_type, default=jdefault)
-    #     response = self.client.post("/api/v1/type/?token={0}".format(
-    #         self.token.token), json.dumps(new_type, cls=DateTimeEncoder),
-    #         content_type="application/json")
-    #     print response
-    #     self.assertEqual(response.status_code, 201)
+    def test_03_create_type(self):
+        "Create a type"
+        new_type = TypeFactory.create(
+            # name=factory.Sequence(lambda n: u"NewType%s" % n),
+            # slug=factory.LazyAttributeSequence(
+            #     lambda o, n: u"%s-%d" % (slugify(o.name), n)),
+            # date_added=datetime.now(),
+            # is_active=True,
+        )
+        response = self.client.post("/api/v1/type/?token={0}".format(
+            self.token.token), json.dumps(new_type, default=jdefault),
+            content_type="application/json")
+        print response
+        self.assertEqual(response.status_code, 201)
 
 
 class BrandResourceTest(BaseResourceTest):

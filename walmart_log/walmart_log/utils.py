@@ -2,6 +2,8 @@
 import re
 import unicodedata
 
+from datetime import datetime
+
 from django.conf import settings
 from django.utils.safestring import mark_safe
 
@@ -15,3 +17,9 @@ def slugify(value):
         'NFKD', value).encode('ascii', 'ignore').decode('ascii')
     value = re.sub('[^\w\s-]', '', value).strip().lower()
     return mark_safe(re.sub('[-\s]+', '-', value))
+
+
+def jdefault(o):
+    if type(o) is datetime.date or type(o) is datetime:
+        return o.isoformat()
+    return o.__dict__
