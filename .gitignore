@@ -54,6 +54,7 @@ venv
 *.db
 *.sqlite
 *.sqlite3
+*.rdb
 
 ## Env File Configuration
 .env

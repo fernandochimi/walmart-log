@@ -45,9 +45,9 @@ class TransportFactory(factory.django.DjangoModelFactory):
         model = Transport
 
         transport_way = factory.Iterator([
-            Transport.TRANSPORT_WAY_CHOICES.GROUND,
-            Transport.TRANSPORT_WAY_CHOICES.AIR,
-            Transport.TRANSPORT_WAY_CHOICES.WATER, ])
+            TRANSPORT_WAY_CHOICES.GROUND,
+            TRANSPORT_WAY_CHOICES.AIR,
+            TRANSPORT_WAY_CHOICES.WATER, ])
         transport_type = factory.Subfactory(TypeFactory)
         brand = factory.Subfactory(BrandFactory)
         name = factory.Sequence(lambda n: u"Vehicle %s" % n)

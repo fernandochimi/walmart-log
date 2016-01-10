@@ -1,3 +1,7 @@
+doc:
+		$(MAKE) -C docs/ html
+		open docs/_build/html/index.html
+
 test:
 		coverage run --source="walmart_log/walmart_log" --omit="../../**migrations**, ../../**tests**" ./walmart_log/manage.py test -v 2 --settings=settings.test --failfast
 		coverage report -m
