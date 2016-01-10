@@ -45,6 +45,19 @@ class BaseResourceTest(TestCase):
             date_added=datetime.now(),
             is_active=True,
         )
+        self.new_map = MapFactory.create(
+            name=u"New Map",
+            slug=u"new-map",
+            transport=factory.SubFactory(TransportFactory),
+            city_origin=factory.SubFactory(CityFactory),
+            city_destiny=factory.SubFactory(CityFactory),
+            logistic_order="City 1, City 2",
+            total_distance="10.0",
+            gas_value="2.88",
+            cost_percent="2.8",
+            date_added=datetime.now(),
+            is_active=True,
+        )
 
     def test_01_unauthorized(self):
         "Request without token does not pass"
@@ -173,14 +186,33 @@ class TransportResourceTest(BaseResourceTest):
             self.token.token))
         self.assertEqual(response.status_code, 404)
 
-    # def test_04_create_transport(self):
-    #     "Create a transport"
-    #     response = self.client.post("/api/v1/transport/?token={0}".format(
-    #         self.token.token), json.dumps(
-    #         self.new_transport, default=jdefault),
-    #         content_type="application/json")
-    #     print response
-    #     self.assertEqual(response.status_code, 201)
+    def test_04_create_transport(self):
+        "Create a transport"
+        print json.dumps(self.new_transport, default=jdefault)
+        response = self.client.post("/api/v1/transport/?token={0}".format(
+            self.token.token), json.dumps(
+            self.new_transport, default=jdefault),
+            content_type="application/json")
+        print response
+        self.assertEqual(response.status_code, 201)
+
+    def test_05_update_transport(self):
+        "Update a transport"
+        self.new_transport.slug = "new-update-transport"
+        self.new_transport.save()
+        response = self.client.put("/api/v1/transport/{0}/?token={1}".format(
+            self.new_transport.id, self.token.token),
+            json.dumps(self.new_transport, default=jdefault))
+        self.assertEqual(response.status_code, 202)
+
+    def test_06_update_transport_does_not_exist(self):
+        "Update a transport that does not exist"
+        self.new_transport.slug = "new-update-transport"
+        self.new_transport.save()
+        response = self.client.put("/api/v1/transport/0/?token={1}".format(
+            self.new_transport.id, self.token.token),
+            json.dumps(self.new_transport, default=jdefault))
+        self.assertEqual(response.status_code, 404)
 
 
 class CityResourceTest(BaseResourceTest):
@@ -221,3 +253,11 @@ class MapResourceTest(BaseResourceTest):
         response = self.client.get("/api/v1/map/0/?token={0}".format(
             self.token.token))
         self.assertEqual(response.status_code, 404)
+
+    def test_04_create_map(self):
+        "Create a map"
+        response = self.client.post("/api/v1/get-map/?token={0}".format(
+            self.token.token), json.dumps(self.new_map, default=jdefault))
+        create_new_map = create_map.delay(self.new_map)
+        self.assertTrue(create_new_map, "new-map")
+        self.assertEqual(response.status_code, 201)

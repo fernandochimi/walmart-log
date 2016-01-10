@@ -5,8 +5,6 @@ from decimal import Decimal
 
 from settings import celery_app
 
-# from django.template.defaultfilters import slugify
-
 from models import City, Map, Transport
 
 logger = logging.getLogger('walmart_log.walmart_log.tasks')
@@ -17,7 +15,6 @@ def create_map(map_info):
     logger.info(u"Start creation of city {0}".format(map_info['city_origin']))
     city_origin, created = City.objects.get_or_create(
         name=map_info['city_origin'],
-        # slug=slugify(map_info['city_origin']),
     )
     logger.info(
         u"City {0} created with success".format(map_info['city_origin']))
@@ -26,7 +23,6 @@ def create_map(map_info):
         u"Start creation of city {0}".format(map_info['city_destiny']))
     city_destiny, created = City.objects.get_or_create(
         name=map_info['city_destiny'],
-        # slug=slugify(map_info['city_destiny']),
     )
     logger.info(
         u"City {0} created with success".format(map_info['city_destiny']))
@@ -35,7 +31,6 @@ def create_map(map_info):
         u"Start creation of Map {0}".format(map_info['name']))
     route_map, created = Map.objects.get_or_create(
         name=map_info['name'],
-        # slug=slugify(map_info['slug']),
         transport=Transport.objects.get(sign=map_info['transport_sign']),
         city_origin=City.objects.get(slug=city_origin.slug),
         city_destiny=City.objects.get(slug=city_destiny.slug),

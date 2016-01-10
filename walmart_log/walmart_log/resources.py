@@ -117,14 +117,12 @@ class BaseResource(DjangoResource):
         route_data = {
             'logistic_order': logistic_order,
             'name': self.request.GET.get('name'),
-            # 'slug': self.request.GET.get('slug'),
             'transport_sign': self.request.GET.get('transport_sign'),
             'city_origin': list_info[0].get('start_address'),
             'city_destiny': list_info[-1].get('end_address'),
             'total_distance': sum_distance / 1000,
             'gas_value': self.request.GET.get('gas_value'),
         }
-
         create_map.delay(route_data)
         return route_data
 
@@ -211,7 +209,6 @@ class BrandResource(BaseResource):
     def create(self):
         return Brand.objects.create(
             name=self.data['name'],
-            # slug=self.data['slug'],
         )
 
     def update(self, pk):
@@ -272,7 +269,6 @@ class TransportResource(BaseResource):
             transport_type=Type.objects.get(slug=self.data['transport_type']),
             brand=Brand.objects.get(slug=self.data['brand']),
             name=self.data['name'],
-            # slug=self.data['slug'],
             sign=self.data['sign'],
             autonomy=self.data['autonomy'],
         )
