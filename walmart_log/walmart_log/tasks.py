@@ -1,6 +1,8 @@
 # coding: utf-8
 import logging
 
+from decimal import Decimal
+
 from settings import celery_app
 
 from models import City, Map, Transport
@@ -33,10 +35,10 @@ def create_map(map_info):
     route_map, created = Map.objects.get_or_create(
         name=map_info['name'],
         slug=slugify(map_info['slug']),
-        transport=Transport.objects.get(sign=map_info['sign']),
+        transport=Transport.objects.get(sign=map_info['transport_sign']),
         city_origin=City.objects.get(slug=city_origin.slug),
         city_destiny=City.objects.get(slug=city_destiny.slug),
         total_distance=map_info['total_distance'],
-        gas_value=map_info['gas_value'])
+        gas_value=Decimal(map_info['gas_value'].replace(",", ".")))
     logger.info(
         u"Map {0} created with success".format(map_info['name']))

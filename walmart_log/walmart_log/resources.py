@@ -9,7 +9,8 @@ from restless.exceptions import NotFound, Unauthorized
 from restless.preparers import FieldsPreparer
 from restless.resources import skip_prepare
 
-from models import Token, Type, Brand, Transport, Map
+from models import Token, Type, \
+    Brand, Transport, City, Map
 from tasks import create_map
 from utils import API_URL_DIRECTIONS, GOOGLE_MAPS_API_KEY
 
@@ -111,6 +112,8 @@ class BaseResource(DjangoResource):
             }
             list_info.append(info_route)
 
+        sum_distance = sum([i.get('distance') for i in list_info])
+
         route_data = {
             # 'waypoint_order': waypoint_order,  # Remove after
             # 'waypoint_list': waypoint_list,  # Remove after
@@ -121,9 +124,10 @@ class BaseResource(DjangoResource):
             'transport_sign': self.request.GET.get('transport_sign'),
             'city_origin': list_info[0].get('start_address'),
             'city_destiny': list_info[-1].get('end_address'),
-            'total_distance': sum([i.get('distance') for i in list_info]),
+            'total_distance': sum_distance / 1000,
             'gas_value': self.request.GET.get('gas_value'),
         }
+
         create_map.delay(route_data)
         return route_data
 
@@ -294,6 +298,32 @@ class TransportResource(BaseResource):
         return Transport.objects.get(id=pk).delete()
 
 
+class CityResource(BaseResource):
+    fields = {
+        'id': 'id',
+        'name': 'name',
+        'slug': 'slug',
+        'date_added': 'date_added',
+        'is_active': 'is_active',
+    }
+
+    def queryset(self, request):
+        filters = self.filters(request=self.request)
+        qs = City.objects.all()
+        return qs.filter(**filters)
+
+    def list(self):
+        self.preparer.fields = self.fields
+        return self.queryset(request=self.request)
+
+    def detail(self, pk):
+        self.preparer.fields = self.fields
+        try:
+            return self.queryset(request=self.request).get(id=pk)
+        except:
+            return self.not_found(self.__class__.__name__, "ID", pk)
+
+
 class MapResource(BaseResource):
     preparer_list = {
         'id': 'id',
@@ -306,7 +336,7 @@ class MapResource(BaseResource):
         'id': 'id',
         'name': 'name',
         'slug': 'slug',
-        'transport': 'transport',
+        'transport': 'transport.sign',
         'city_origin': 'city_origin',
         'city_destiny': 'city_destiny',
         'total_distance': 'total_distance',
@@ -331,11 +361,13 @@ class MapResource(BaseResource):
 
     def list(self):
         self.preparer.fields = self.preparer_list
+        print self.queryset(request=self.request)
         return self.queryset(request=self.request)
 
     def detail(self, slug):
         self.preparer.fields = self.preparer_detail
         try:
+            print self.queryset(request=self.request).get(slug=slug)
             return self.queryset(request=self.request).get(slug=slug)
         except:
             return self.not_found(self.__class__.__name__, "SLUG", slug)

@@ -110,13 +110,13 @@ class Map(models.Model):
     city_origin = models.ForeignKey(City, related_name='cityorigin_set')
     city_destiny = models.ForeignKey(City, related_name='citydestiny_set')
     total_distance = models.DecimalField(
-        u'total distance', default=0, decimal_places=2, max_digits=5,
+        u'total distance', default=0, decimal_places=2, max_digits=11,
         null=True, blank=True)
     gas_value = models.DecimalField(
-        u'gas value', default=0, decimal_places=2, max_digits=5,
-        null=True, blank=True)
+        u'gas value', default=0, decimal_places=2, max_digits=11,
+        help_text='On KM', null=True, blank=True)
     cost_percent = models.DecimalField(
-        u'coast percent', default=0, decimal_places=2, max_digits=5,
+        u'cost percent', default=0, decimal_places=2, max_digits=11,
         null=True, blank=True)
     date_added = models.DateTimeField(
         default=datetime.now)
@@ -125,10 +125,10 @@ class Map(models.Model):
     def __unicode__(self):
         return u'{0}'.format(self.name)
 
-    def calculate_cost_percent(self):
+    def save(self, *args, **kwargs):
         self.cost_percent = (
             self.total_distance * self.gas_value) / self.transport.autonomy
-        return self.cost_percent.save()
+        super(Map, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name, verbose_name_plural = "Map", "Maps"

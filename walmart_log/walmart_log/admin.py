@@ -45,11 +45,13 @@ class CityAdmin(admin.ModelAdmin):
 
 class MapAdmin(admin.ModelAdmin):
     list_display = (
-        "name", "city_origin", "city_destiny", "date_added", "is_active",)
+        "name", "city_origin", "city_destiny",
+        "date_added", "is_active", "cost_percent",)
     list_filter = ("is_active", "transport__name",)
     date_hierarchy = "date_added"
     search_fields = ("name",)
     prepopulated_fields = {"slug": ("name",)}
+    readonly_fields = ("cost_percent", )
 
 
 admin.site.register(Token, TokenAdmin)
